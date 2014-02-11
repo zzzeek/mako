@@ -214,13 +214,25 @@ if _ast:
 
         def visit_FunctionDef(self, node):
             self.listener.funcname = node.name
+
             argnames = [arg_id(arg) for arg in node.args.args]
             if node.args.vararg:
                 argnames.append(arg_stringname(node.args.vararg))
+
+            if compat.py2k:
+                # kw-only args don't exist in Python 2
+                kwargnames = []
+            else:
+                kwargnames = [arg_id(arg) for arg in node.args.kwonlyargs]
             if node.args.kwarg:
-                argnames.append(arg_stringname(node.args.kwarg))
+                kwargnames.append(arg_stringname(node.args.kwarg))
             self.listener.argnames = argnames
             self.listener.defaults = node.args.defaults  # ast
+            self.listener.kwargnames = kwargnames
+            if compat.py2k:
+                self.listener.kwdefaults = []
+            else:
+                self.listener.kwdefaults = node.args.kw_defaults
             self.listener.varargs = node.args.vararg
             self.listener.kwargs = node.args.kwarg
 
@@ -367,8 +379,13 @@ else:
 
         def visitFunction(self, node, *args):
             self.listener.funcname = node.name
-            self.listener.argnames = node.argnames
+            self.listener.argnames = list(node.argnames)
+            if node.kwargs:
+                self.listener.kwargnames = [self.listener.argnames.pop()]
+            else:
+                self.listener.kwargnames = []
             self.listener.defaults = node.defaults
+            self.listener.kwdefaults = []
             self.listener.varargs = node.varargs
             self.listener.kwargs = node.kwargs
 
