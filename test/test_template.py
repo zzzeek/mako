@@ -1358,3 +1358,12 @@ class FuturesTest(TemplateTest):
     def test_future_import(self):
         t = Template("${ x / y }", future_imports=["division"])
         assert result_lines(t.render(x=12, y=5)) == ["2.4"]
+
+
+class DoubleBraceTest(TemplateTest):
+    def test_double_brace(self):
+        template = Template("""
+            hello {{x}}, {} ${x} <%text>{{x}}</%text> {{y}} {} {y}, ${z} {{z}}
+""", double_brace=True)
+
+        assert flatten_result(template.render(x=5, y=10, z=7)) == "hello 5, {} ${x} {{x}} 10 {} {y}, ${z} 7"
