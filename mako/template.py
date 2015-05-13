@@ -7,7 +7,7 @@
 """Provides the Template class, a facade for parsing, generating and executing
 template strings, as well as template runtime operations."""
 
-from mako.lexer import Lexer
+from mako.lexer import Lexer, LexerDoubleBrace
 from mako import runtime, util, exceptions, codegen, cache, compat
 import os
 import re
@@ -243,7 +243,8 @@ class Template(object):
                  future_imports=None,
                  enable_loop=True,
                  preprocessor=None,
-                 lexer_cls=None):
+                 lexer_cls=None,
+                 double_brace=False):
         if uri:
             self.module_id = re.sub(r'\W', "_", uri)
             self.uri = uri
@@ -295,6 +296,9 @@ class Template(object):
         self.imports = imports
         self.future_imports = future_imports
         self.preprocessor = preprocessor
+
+        if double_brace:
+            self.lexer_cls = LexerDoubleBrace
 
         if lexer_cls is not None:
             self.lexer_cls = lexer_cls

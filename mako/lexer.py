@@ -31,6 +31,8 @@ class Lexer(object):
         self.ternary_stack = []
         self.disable_unicode = disable_unicode
         self.encoding = input_encoding
+        self.start = r'\${'
+        self.end = r'}'
 
         if compat.py3k and disable_unicode:
             raise exceptions.UnsupportedError(
@@ -342,20 +344,19 @@ class Lexer(object):
         match = self.match(r"""
                 (.*?)         # anything, followed by:
                 (
-                 (?<=\n)(?=[ \t]*(?=%|\#\#)) # an eval or line-based
-                                             # comment preceded by a
-                                             # consumed newline and whitespace
+                 (?<=\n)(?=[ \t]*(?=%%|\#\#)) # an eval or line-based
+                                              # comment preceded by a
+                                              # consumed newline and whitespace
                  |
-                 (?=\${)      # an expression
+                 (?=%s)       # an expression
                  |
-                 (?=</?[%&])  # a substitution or block or call start or end
-                              # - don't consume
+                 (?=</?[%%&])  # a substitution or block or call start or end
+                               # - don't consume
                  |
                  (\\\r?\n)    # an escaped newline  - throw away
                  |
                  \Z           # end of string
-                )""", re.X | re.S)
-
+                )""" % self.start, re.X | re.S)
         if match:
             text = match.group(1)
             if text:
@@ -381,12 +382,12 @@ class Lexer(object):
             return False
 
     def match_expression(self):
-        match = self.match(r"\${")
+        match = self.match(self.start)
         if match:
             line, pos = self.matched_lineno, self.matched_charpos
-            text, end = self.parse_until_text(r'\|', r'}')
+            text, end = self.parse_until_text(r'\|', self.end)
             if end == '|':
-                escapes, end = self.parse_until_text(r'}')
+                escapes, end = self.parse_until_text(self.end)
             else:
                 escapes = ""
             text = text.replace('\r\n', '\n')
@@ -441,3 +442,12 @@ class Lexer(object):
             return True
         else:
             return False
+
+
+class LexerDoubleBrace(Lexer):
+    def __init__(self, text, filename=None,
+                 disable_unicode=False,
+                 input_encoding=None, preprocessor=None):
+        Lexer.__init__(self, text, filename, disable_unicode, input_encoding, preprocessor)
+        self.start = r'{{'
+        self.end = r'}}'

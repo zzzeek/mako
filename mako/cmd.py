@@ -35,6 +35,8 @@ def cmdline(argv=None):
         "template is read from stdin, the value defaults to be "
         "the current directory, otherwise it defaults to be the "
         "parent directory of the file provided.")
+    parser.add_argument('--double-brace', action='store_true',
+                        help="Use {{ ... }} instead of ${ ... }")
     parser.add_argument('input', nargs='?', default='-')
 
     options = parser.parse_args(argv)
@@ -42,7 +44,8 @@ def cmdline(argv=None):
         lookup_dirs = options.template_dir or ["."]
         lookup = TemplateLookup(lookup_dirs)
         try:
-            template = Template(sys.stdin.read(), lookup=lookup)
+            template = Template(sys.stdin.read(), lookup=lookup,
+                                double_brace=options.double_brace)
         except:
             _exit()
     else:
@@ -52,7 +55,8 @@ def cmdline(argv=None):
         lookup_dirs = options.template_dir or [dirname(filename)]
         lookup = TemplateLookup(lookup_dirs)
         try:
-            template = Template(filename=filename, lookup=lookup)
+            template = Template(filename=filename, lookup=lookup,
+                                double_brace=options.double_brace)
         except:
             _exit()
 

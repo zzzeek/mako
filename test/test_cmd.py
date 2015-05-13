@@ -29,7 +29,6 @@ class CmdTest(TemplateTest):
                         stderr.write.mock_calls[0][1][0]
             assert "Traceback" in stderr.write.mock_calls[0][1][0]
 
-
     def test_stdin_rt_err(self):
         with mock.patch("sys.stdin", mock.Mock(
                             read=mock.Mock(return_value="${q}"))):
@@ -70,3 +69,10 @@ class CmdTest(TemplateTest):
         with raises(SystemExit, "error: can't find fake.lalala"):
             cmdline(["--var", "x=5", "fake.lalala"])
 
+    def test_double_brace_stdin_success(self):
+        with self._capture_output_fixture() as stdout:
+            with mock.patch("sys.stdin", mock.Mock(
+                            read=mock.Mock(return_value="hello world {{x}}"))):
+                cmdline(["--double-brace", "--var", "x=5", "-"])
+
+        eq_(stdout.write.mock_calls[0][1][0], "hello world 5")
