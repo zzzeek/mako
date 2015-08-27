@@ -2,6 +2,20 @@
 Mako Templates for Python
 =========================
 
+:Version: |version|
+:Travis CI: |travis|
+:Appveyor: |appveyor|
+
+.. |version| image:: https://img.shields.io/pypi/v/Mako.png
+        :target: https://pypi.python.org/pypi/Mako
+
+.. |travis| image:: https://img.shields.io/travis/zzzeek/mako.png
+        :target: https://travis-ci.org/zzzeek/mako
+
+.. |appveyor| image:: https://img.shields.io/appveyor/ci/zzzeek/mako.png
+        :target: https://ci.appveyor.com/project/zzzeek/mako/branch/master
+
+     
 Mako is a template library written in Python. It provides a familiar, non-XML 
 syntax which compiles into Python modules for maximum performance. Mako's 
 syntax and API borrows from the best ideas of many others, including Django
