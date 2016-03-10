@@ -193,7 +193,7 @@ html_domain_indices = False
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Makodoc'
+#htmlhelp_basename = 'Makodoc'
 
 #autoclass_content = 'both'
 
