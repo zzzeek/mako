@@ -280,6 +280,7 @@ class _GenerateRenderMethod(object):
 
         this could be the main render() method or that of a top-level def."""
 
+        self.printer.writeline("# BOILERPLATE")
         if self.in_def:
             decorator = node.decorator
             if decorator:
@@ -335,6 +336,7 @@ class _GenerateRenderMethod(object):
     def write_inherit(self, node):
         """write the module-level inheritance-determination callable."""
 
+        self.printer.writeline("# BOILERPLATE")
         self.printer.writelines(
             "def _mako_inherit(template, context):",
             "_mako_generate_namespaces(context)",
@@ -345,6 +347,7 @@ class _GenerateRenderMethod(object):
 
     def write_namespaces(self, namespaces):
         """write the module-level namespace-generating callable."""
+        self.printer.writeline("# BOILERPLATE")
         self.printer.writelines(
             "def _mako_get_namespace(context, name):",
             "try:",
@@ -632,6 +635,7 @@ class _GenerateRenderMethod(object):
         writes code to retrieve captured content, apply filters, send proper
         return value."""
 
+        self.printer.writeline("# BOILERPLATE")
         if not buffered and not cached and not filtered:
             self.printer.writeline("return ''")
             if callstack:
@@ -887,6 +891,7 @@ class _GenerateRenderMethod(object):
         pass
 
     def visitBlockTag(self, node):
+        self.printer.writeline("# BOILERPLATE")
         if node.is_anonymous:
             self.printer.writeline("%s()" % node.funcname)
         else:
@@ -959,6 +964,7 @@ class _GenerateRenderMethod(object):
             n.accept_visitor(self)
         self.identifier_stack.pop()
 
+        self.printer.writeline("# BOILERPLATE")
         self.write_def_finish(node, buffered, False, False, callstack=False)
         self.printer.writelines(
             None,
