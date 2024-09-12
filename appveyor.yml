@@ -1,0 +1,43 @@
+environment:
+  matrix:
+    - PYTHON: "C:\\Python27"
+      TOX_ENV: "py27"
+      
+    - PYTHON: "C:\\Python27-x64"
+      TOX_ENV: "py27"
+
+    - PYTHON: "C:\\Python33"
+      TOX_ENV: "py33"
+
+    - PYTHON: "C:\\Python33-x64"
+      TOX_ENV: "py33"
+
+    - PYTHON: "C:\\Python34"
+      TOX_ENV: "py34"
+
+    - PYTHON: "C:\\Python34-x64"
+      TOX_ENV: "py34"
+
+    - PYTHON: "C:\\Python35"
+      TOX_ENV: "py35"
+
+    - PYTHON: "C:\\Python35-x64"
+      TOX_ENV: "py35"
+
+init:
+  - "echo %PYTHON%"
+
+install:
+  - "set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"       
+  - python --version
+  - python -m pip install -U pip
+  - python -m pip install -U setuptools wheel virtualenv
+  - python -m pip install -U tox
+  
+  - ECHO "List Environemnt"
+  - python -m pip list --format=columns
+
+build: false  # Not a C# project, build stuff at the test step instead.
+
+test_script:
+  - python -m tox -e %TOX_ENV%"
